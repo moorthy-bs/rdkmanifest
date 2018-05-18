@@ -14,7 +14,9 @@
     <project name="96boards/meta-96boards" path="layers/meta-96boards" remote="github" revision="f2d9bf62f7cf4c3cac5f23f603ad712a21213239"/>
     <project remote="cmf" name="rdk/components/opensource/oe/meta-qt5" path="layers/meta-qt5" revision="master"/>
 
-    <project remote="cmf" name="components/generic/rdk-oe/meta-cmf" path="layers/meta-cmf" revision="master"/>
+    <project remote="cmf" name="components/generic/rdk-oe/meta-cmf" path="layers/meta-cmf" revision="master">
+        <linkfile dest="setup-rdk-environment" src="../../.repo/local_manifests/setup-environment"/>
+    </project>
     <project remote="cmf" name="components/generic/rdk-oe/meta-cmf-video" path="layers/meta-cmf-video"  revision="master"/>
     <project remote="cmf" name="components/generic/rdk-oe/meta-rdk" path="layers/meta-rdk"  revision="master"/>
     <project remote="cmf" name="components/generic/rdk-oe/meta-rdk-containers" path="layers/meta-rdk-containers"  revision="master"/>

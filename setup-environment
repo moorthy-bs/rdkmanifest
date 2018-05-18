@@ -1,0 +1,92 @@
+#!/bin/sh
+# -*- mode: shell-script-mode; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+#
+# Copyright (C) 2012-13 O.S. Systems Software LTDA.
+# Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
+# Adopted to Angstrom:  Khem Raj <raj.khem@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+. .repo/manifests/setup-environment-internal
+
+BUILD_DIR=$PWD
+LAYER_DIR="../layers"
+CMF_LAYER="meta-cmf"
+CMF_LAYER_CONF_FILE="$CMF_LAYER/conf/layer.conf"
+####################################################
+
+case "$(sed -n 's/^__version__ = "\(.*\)"/\1/p' ../bitbake/bin/bitbake)"
+in
+    1.37.*|1.38.*) _DISTRO_VER="sumo" ;;
+    1.35.*|1.36.*) _DISTRO_VER="rocko" ;;
+    1.34.*) _DISTRO_VER="pyro" ;;
+    1.32.*) _DISTRO_VER="morty" ;;
+    1.30.*) _DISTRO_VER="krogoth" ;;
+    *)      _DISTRO_VER="daisy" ;;
+esac
+
+if [ -z "$(grep '^DISTRO_CODENAME' conf/local.conf)" ]; then
+    echo "DISTRO_CODENAME ?= \"${_DISTRO_VER}\"" >> conf/local.conf
+else
+    sed -e "s/##DISTRO_CODENAME##/$_DISTRO_VER/g" -i conf/local.conf
+fi
+####################################################
+
+cd $LAYER_DIR
+# avoid external source configuration, so that all source be internal
+if [ -d $CMF_LAYER -a -f $CMF_LAYER_CONF_FILE ]; then
+    sed -i "/rdk-external-src/d" $CMF_LAYER_CONF_FILE
+fi
+####################################################
+
+# Add rdk & cmf layers only if not already present.
+cd $BUILD_DIR
+
+newlayers=""
+if [ -d $LAYER_DIR/meta-cmf -a -z "$(grep 'meta-cmf[^-]' conf/bblayers.conf)" ]; then
+    newlayers+="             \${OEROOT}/layers/meta-cmf \\\\\n"
+fi
+if [ -d $LAYER_DIR/meta-cmf-video -a -z "$(grep 'meta-cmf-video[^-]' conf/bblayers.conf)" ]; then
+    newlayers+="             \${OEROOT}/layers/meta-cmf-video \\\\\n"
+fi
+if [ -d $LAYER_DIR/meta-rdk -a -z "$(grep 'meta-rdk[^-]' conf/bblayers.conf)" ]; then
+    newlayers+="             \${OEROOT}/layers/meta-rdk \\\\\n"
+fi
+if [ -d $LAYER_DIR/meta-rdk-video -a -z "$(grep 'meta-rdk-video[^-]' conf/bblayers.conf)" ]; then
+    newlayers+="             \${OEROOT}/layers/meta-rdk-video \\\\\n"
+fi
+if [ -d $LAYER_DIR/meta-rdk-ext -a -z "$(grep 'meta-rdk-ext[^-]' conf/bblayers.conf)" ]; then
+    newlayers+="             \${OEROOT}/layers/meta-rdk-ext \\\\\n"
+fi
+
+if [ ! -z "$newlayers" ] ; then
+    echo "BBLAYERS += \" \\" >> conf/bblayers.conf
+    echo -e "$newlayers            \"" >> conf/bblayers.conf
+fi
+
+#add metrological and LHG layers
+newlayers=""
+if [ -d $LAYER_DIR/meta-metrological -a -z "$(grep 'meta-metrological[^-]' conf/bblayers.conf)" ]; then
+    newlayers+="             \${OEROOT}/layers/meta-metrological \\\\\n"
+fi
+if [ -d $LAYER_DIR/meta-lhg -a -z "$(grep 'meta-lhg\/meta-lhg[^-]' conf/bblayers.conf)" ]; then
+    newlayers+="             \${OEROOT}/layers/meta-lhg/meta-lhg \\\\\n"
+fi
+
+if [ ! -z "$newlayers" ] ; then
+    echo "BBLAYERS += \" \\" >> conf/bblayers.conf
+    echo -e "$newlayers            \"" >> conf/bblayers.conf
+fi
+echo "RDK layers are configured"
+####################################################
