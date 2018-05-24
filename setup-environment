@@ -23,6 +23,8 @@
 BUILD_DIR=$PWD
 LAYER_DIR="../layers"
 CMF_LAYER="meta-cmf"
+LOCAL_CONF="conf/local.conf"
+BBLAYER_CONF="conf/bblayers.conf"
 CMF_LAYER_CONF_FILE="$CMF_LAYER/conf/layer.conf"
 ####################################################
 
@@ -36,10 +38,10 @@ in
     *)      _DISTRO_VER="daisy" ;;
 esac
 
-if [ -z "$(grep '^DISTRO_CODENAME' conf/local.conf)" ]; then
-    echo "DISTRO_CODENAME ?= \"${_DISTRO_VER}\"" >> conf/local.conf
+if [ -z "$(grep '^DISTRO_CODENAME' $LOCAL_CONF)" ]; then
+    echo "DISTRO_CODENAME ?= \"${_DISTRO_VER}\"" >> $LOCAL_CONF
 else
-    sed -e "s/##DISTRO_CODENAME##/$_DISTRO_VER/g" -i conf/local.conf
+    sed -e "s/##DISTRO_CODENAME##/$_DISTRO_VER/g" -i $LOCAL_CONF
 fi
 ####################################################
 
@@ -54,39 +56,48 @@ fi
 cd $BUILD_DIR
 
 newlayers=""
-if [ -d $LAYER_DIR/meta-cmf -a -z "$(grep 'meta-cmf[^-]' conf/bblayers.conf)" ]; then
+if [ -d $LAYER_DIR/meta-cmf -a -z "$(grep 'meta-cmf[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-cmf \\\\\n"
 fi
-if [ -d $LAYER_DIR/meta-cmf-video -a -z "$(grep 'meta-cmf-video[^-]' conf/bblayers.conf)" ]; then
+if [ -d $LAYER_DIR/meta-cmf-video -a -z "$(grep 'meta-cmf-video[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-cmf-video \\\\\n"
 fi
-if [ -d $LAYER_DIR/meta-rdk -a -z "$(grep 'meta-rdk[^-]' conf/bblayers.conf)" ]; then
+if [ -d $LAYER_DIR/meta-rdk -a -z "$(grep 'meta-rdk[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-rdk \\\\\n"
 fi
-if [ -d $LAYER_DIR/meta-rdk-video -a -z "$(grep 'meta-rdk-video[^-]' conf/bblayers.conf)" ]; then
+if [ -d $LAYER_DIR/meta-rdk-video -a -z "$(grep 'meta-rdk-video[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-rdk-video \\\\\n"
 fi
-if [ -d $LAYER_DIR/meta-rdk-ext -a -z "$(grep 'meta-rdk-ext[^-]' conf/bblayers.conf)" ]; then
+if [ -d $LAYER_DIR/meta-rdk-ext -a -z "$(grep 'meta-rdk-ext[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-rdk-ext \\\\\n"
 fi
 
 if [ ! -z "$newlayers" ] ; then
-    echo "BBLAYERS += \" \\" >> conf/bblayers.conf
-    echo -e "$newlayers            \"" >> conf/bblayers.conf
+    echo "BBLAYERS += \" \\" >> $BBLAYER_CONF
+    echo -e "$newlayers            \"" >> $BBLAYER_CONF
 fi
 
 #add metrological and LHG layers
 newlayers=""
-if [ -d $LAYER_DIR/meta-metrological -a -z "$(grep 'meta-metrological[^-]' conf/bblayers.conf)" ]; then
+if [ -d $LAYER_DIR/meta-metrological -a -z "$(grep 'meta-metrological[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-metrological \\\\\n"
 fi
-if [ -d $LAYER_DIR/meta-lhg -a -z "$(grep 'meta-lhg\/meta-lhg[^-]' conf/bblayers.conf)" ]; then
+if [ -d $LAYER_DIR/meta-lhg -a -z "$(grep 'meta-lhg\/meta-lhg[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-lhg/meta-lhg \\\\\n"
 fi
 
 if [ ! -z "$newlayers" ] ; then
-    echo "BBLAYERS += \" \\" >> conf/bblayers.conf
-    echo -e "$newlayers            \"" >> conf/bblayers.conf
+    echo "BBLAYERS += \" \\" >> $BBLAYER_CONF
+    echo -e "$newlayers            \"" >> $BBLAYER_CONF
 fi
 echo "RDK layers are configured"
+
+# if meta-rpb layer not found but included in BBLAYERS, remove it. Because RDK distro is choosed
+if [ ! -d $LAYER_DIR/meta-rpb -a ! -z "$(grep 'meta-rpb[^-]' $BBLAYER_CONF)" ]; then
+    sed -i '/meta-rpb/d' $BBLAYER_CONF
+fi
+####################################################
+
+#change Layer configuration version to 6
+sed -i 's/LCONF_VERSION = "[0-9]"/LCONF_VERSION = "6"/' $BBLAYER_CONF
 ####################################################
