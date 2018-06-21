@@ -62,6 +62,12 @@ fi
 if [ -d $LAYER_DIR/meta-cmf-video -a -z "$(grep 'meta-cmf-video[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-cmf-video \\\\\n"
 fi
+if [ -d $LAYER_DIR/meta-cmf-qt5 -a -z "$(grep 'meta-cmf-qt5[^-]' $BBLAYER_CONF)" ]; then
+    newlayers+="             \${OEROOT}/layers/meta-cmf-qt5 \\\\\n"
+fi
+if [ -d $LAYER_DIR/meta-cmf-video -a -z "$(grep 'meta-cmf-96boards[^-]' $BBLAYER_CONF)" ]; then
+newlayers+="             \${OEROOT}/layers/meta-cmf-96boards \\\\\n"
+fi
 if [ -d $LAYER_DIR/meta-rdk -a -z "$(grep 'meta-rdk[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-rdk \\\\\n"
 fi
@@ -70,6 +76,12 @@ if [ -d $LAYER_DIR/meta-rdk-video -a -z "$(grep 'meta-rdk-video[^-]' $BBLAYER_CO
 fi
 if [ -d $LAYER_DIR/meta-rdk-ext -a -z "$(grep 'meta-rdk-ext[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-rdk-ext \\\\\n"
+fi
+if [ -d $LAYER_DIR/meta-rdk-restricted -a -z "$(grep 'meta-rdk-restricted[^-]' $BBLAYER_CONF)" ]; then
+    newlayers+="             \${OEROOT}/layers/meta-rdk-restricted \\\\\n"
+fi
+if [ -d $LAYER_DIR/meta-cmf-restricted -a -z "$(grep 'meta-cmf-restricted[^-]' $BBLAYER_CONF)" ]; then
+    newlayers+="             \${OEROOT}/layers/meta-cmf-restricted \\\\\n"
 fi
 
 if [ ! -z "$newlayers" ] ; then
@@ -84,6 +96,12 @@ if [ -d $LAYER_DIR/meta-metrological -a -z "$(grep 'meta-metrological[^-]' $BBLA
 fi
 if [ -d $LAYER_DIR/meta-lhg -a -z "$(grep 'meta-lhg\/meta-lhg[^-]' $BBLAYER_CONF)" ]; then
     newlayers+="             \${OEROOT}/layers/meta-lhg/meta-lhg \\\\\n"
+fi
+if [ -d $LAYER_DIR/meta-lhg/meta-lhg-wpe -a -z "$(grep 'meta-lhg\/meta-lhg-wpe[^-]' $BBLAYER_CONF)" ]; then
+newlayers+="             \${OEROOT}/layers/meta-lhg/meta-lhg-wpe \\\\\n"
+fi
+if [ -d $LAYER_DIR/meta-lhg-prop -a -z "$(grep 'meta-lhg-prop[^-]' $BBLAYER_CONF)" ]; then
+newlayers+="             \${OEROOT}/layers/meta-lhg-prop \\\\\n"
 fi
 
 if [ ! -z "$newlayers" ] ; then

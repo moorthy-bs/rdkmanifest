@@ -14,7 +14,14 @@
     <project remote="cmf" name="components/generic/rdk-oe/meta-cmf" path="layers/meta-cmf" revision="master">
         <linkfile dest="setup-rdk-environment" src="../../.repo/local_manifests/setup-environment"/>
     </project>
+    <project remote="cmf" name="components/generic/rdk-oe/meta-cmf-qt5" path="layers/meta-cmf-qt5"  revision="master"/>
     <project remote="cmf" name="components/generic/rdk-oe/meta-cmf-video" path="layers/meta-cmf-video"  revision="master"/>
+    <project remote="cmf" name="components/opensource/patches/qtbase-5.1.1" path="layers/meta-cmf-qt5/recipes-qt/qt5/qtbase-5.1.1" revision="master"/>
+    <project remote="cmf" name="components/opensource/patches/qtwebkit-5.1.1" path="layers/meta-cmf-qt5/recipes-qt/qt5/qtwebkit-5.1.1" revision="master"/>
+    <project remote="cmf" name="components/opensource/patches/qtwebsockets-0.9.0" path="layers/meta-cmf-qt5/recipes-qt/qt5/qtwebsockets-5.1.1" revision="master"/>
+    <project remote="cmf" name="components/generic/rdk-oe/meta-cmf-96boards" path="layers/meta-cmf-96boards"  revision="master"/>
+    <project remote="cmf" name="components/restricted/rdk-oe/meta-rdk-restricted" path="layers/meta-rdk-restricted"  revision="master"/>
+    <project remote="cmf" name="components/restricted/rdk-oe/meta-cmf-restricted" path="layers/meta-cmf-restricted"  revision="master"/>
     <project remote="cmf" name="components/generic/rdk-oe/meta-rdk" path="layers/meta-rdk"  revision="master"/>
     <project remote="cmf" name="components/generic/rdk-oe/meta-rdk-containers" path="layers/meta-rdk-containers"  revision="master"/>
     <project remote="cmf" name="components/generic/rdk-oe/meta-rdk-ext" path="layers/meta-rdk-ext"  revision="master"/>
